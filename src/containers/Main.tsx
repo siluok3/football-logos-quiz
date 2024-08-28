@@ -1,7 +1,9 @@
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import {RootStackParamList} from '../navigation/AppNavigator'
 import {Button, StyleSheet, Text, View} from 'react-native'
+
+import {RootStackParamList} from '../navigation/AppNavigator'
+import Layout from '../components/layout/Layout';
 
 type MainScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>
 
@@ -13,10 +15,12 @@ const Main: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Football Logo Quiz</Text>
-      <Button title="Random Logos" onPress={handleRandomLogosPress} />
-    </View>
+    <Layout>
+      <View style={styles.container}>
+        <Text style={styles.title}>Welcome to Football Logo Quiz</Text>
+        <Button title="Random Logos" onPress={handleRandomLogosPress} />
+      </View>
+    </Layout>
   )
 }
 

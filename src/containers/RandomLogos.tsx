@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Button, Image, StyleSheet, TextInput, View, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, {useRef, useState} from 'react'
+import {Button, Image, StyleSheet, TextInput, View, Text, Animated} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { getRandomLogos, Logo } from '../services/logoService';
+import { RootStackParamList } from '../navigation/AppNavigator'
+import { getRandomLogos, Logo } from '../services/logoService'
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
@@ -15,6 +15,43 @@ const RandomLogos: React.FC = () => {
   const [userGuess, setUserGuess] = useState('')
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [remainingLogos, setRemainingLogos] = useState<Logo[]>(logos)
+
+  const correctAnimationValue = useRef(new Animated.Value(0)).current
+  const wrongAnimationValue = useRef(new Animated.Value(0)).current
+
+  const animateCorrectAnswer = () => {
+    Animated.sequence([
+      Animated.timing(correctAnimationValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      }),
+      Animated.delay(2000),
+      Animated.timing(correctAnimationValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      })
+    ]).start(() => {
+      handleNextLogo()
+    })
+  }
+
+  const animateWrongAnswer = () => {
+    Animated.sequence([
+      Animated.timing(wrongAnimationValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      }),
+      Animated.delay(2000),
+      Animated.timing(wrongAnimationValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      })
+    ]).start()
+  }
 
   const handleBack = () => {
     navigation.goBack()
@@ -29,12 +66,10 @@ const RandomLogos: React.FC = () => {
 
     if (currentLogo.name.toLowerCase().trimEnd() === userGuess.toLowerCase().trimEnd()) {
       setIsCorrect(true)
-
-      setTimeout(() => {
-        handleNextLogo()
-      }, 2000)
+      animateCorrectAnswer()
     } else {
       setIsCorrect(false)
+      animateWrongAnswer()
     }
   }
 
@@ -66,8 +101,38 @@ const RandomLogos: React.FC = () => {
             onChangeText={handleGuessChange}
           />
           <Button title="Check Answer" onPress={handleCheckAnswer} />
-          {isCorrect === true && <Text>Correct!</Text>}
-          {isCorrect === false && <Text>Try again!</Text>}
+          {isCorrect === true && (
+            <Animated.Text
+              style={[
+                styles.correctText,
+                {
+                  opacity: correctAnimationValue,
+                  transform: [{ scale: correctAnimationValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.8, 1.2],
+                    })}],
+                },
+              ]}
+            >
+              Correct!
+            </Animated.Text>
+          )}
+          {isCorrect === false && (
+            <Animated.Text
+              style={[
+                styles.wrongText,
+                {
+                  opacity: wrongAnimationValue,
+                  transform: [{ scale: wrongAnimationValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.8, 1.2],
+                    })}],
+                },
+              ]}
+            >
+              Try again
+            </Animated.Text>
+          )}
         </>
       ) : (
         <Text>Congrats! All logos have been found. Go back to play again</Text>
@@ -95,6 +160,18 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
     paddingHorizontal: 10,
+  },
+  correctText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginTop: 20,
+  },
+  wrongText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#FF5252',
+    marginTop: 20,
   },
 })
 
