@@ -1,23 +1,40 @@
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Button, Image, StyleSheet, TextInput, View, Text, Animated} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
-import { getRandomLogos, Logo } from '../services/logoService'
+import {getLogosFromBackend, Logo} from '../services/logoService'
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
 const RandomLogos: React.FC = () => {
   const navigation = useNavigation<RandomLogosScreenNavigationProp>()
-  const [logos] = useState(getRandomLogos('easy'))
-  const [currentLogo, setCurrentLogo] = useState(logos[0])
+  const [logos, setLogos] = useState<Logo[]>([])
+  const [currentLogo, setCurrentLogo] = useState<Logo | null>(null)
   const [userGuess, setUserGuess] = useState('')
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [remainingLogos, setRemainingLogos] = useState<Logo[]>(logos)
 
   const correctAnimationValue = useRef(new Animated.Value(0)).current
   const wrongAnimationValue = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    const fetchLogos = async () => {
+      try {
+        const data = await getLogosFromBackend('easy')
+        setLogos(data)
+        if (data.length > 0) {
+          setCurrentLogo(data[0]);
+          setRemainingLogos(data);
+        }
+      } catch (err) {
+        console.error('Error fetching logos:', err)
+      }
+    }
+
+    fetchLogos()
+  }, [])
 
   const animateCorrectAnswer = () => {
     Animated.sequence([
@@ -77,7 +94,7 @@ const RandomLogos: React.FC = () => {
     setUserGuess('')
     setIsCorrect(null)
 
-    const updatedRemainingLogos = remainingLogos.filter(logo => logo.id !== currentLogo.id)
+    const updatedRemainingLogos = remainingLogos.filter(logo => logo.id !== currentLogo?.id)
 
     if (updatedRemainingLogos.length > 0) {
       setRemainingLogos(updatedRemainingLogos)
@@ -93,7 +110,7 @@ const RandomLogos: React.FC = () => {
       <Button title="Back" onPress={handleBack} />
       {remainingLogos.length > 0 ? (
         <>
-          {currentLogo && <Image source={currentLogo.image} style={styles.logo} />}
+          {currentLogo && (<Image source={{ uri: currentLogo.imageUrl }} style={styles.logo} />)}
           <TextInput
             style={styles.input}
             placeholder="Enter team name"
