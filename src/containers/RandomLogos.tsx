@@ -1,9 +1,10 @@
-import {Button, Image, StyleSheet, TextInput, View, Text} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AppNavigator';
-import {useEffect, useState} from 'react';
-import {getRandomLogos, Logo} from '../services/logoService';
+import { useState } from 'react';
+import { Button, Image, StyleSheet, TextInput, View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { getRandomLogos, Logo } from '../services/logoService';
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
