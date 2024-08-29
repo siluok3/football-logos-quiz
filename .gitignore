@@ -1,2 +1,6 @@
 /backend/node_modules/
+
+# Ignore the dist folder (build output)
+/backend/lambdas/dist
+
 .idea

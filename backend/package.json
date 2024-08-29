@@ -5,6 +5,10 @@
   "license": "ISC",
   "description": "backend",
   "private": true,
+  "scripts": {
+    "build": "tsc --build lambdas/tsconfig.json",
+    "cdk-deploy": "npm run build && cd cdk && npx cdk deploy"
+  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.637.0",
     "@aws-sdk/client-s3": "^3.637.0",
