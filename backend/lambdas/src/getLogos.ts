@@ -2,6 +2,15 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import {DynamoDBClient, ScanCommand} from '@aws-sdk/client-dynamodb';
 import {GetObjectCommand, GetObjectCommandInput, S3Client} from '@aws-sdk/client-s3';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
+import {transformDynamoDBItem} from './helper/transformDynamoDbItem';
+
+interface Logo {
+  imageKey: string;
+  difficulty: string;
+  id: string;
+  name: string;
+  imageUrl: string;
+}
 
 const dynamodbClient = new DynamoDBClient({});
 const s3Client = new S3Client({});
@@ -13,10 +22,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     //Logos metadata
     const result = await dynamodbClient.send(new ScanCommand({ TableName: tableName }));
 
+    const transformedItems = result.Items?.map(transformDynamoDBItem) || []
+
     //Fetch signed URLS for the logos stored on S3
-    const logos = await Promise.all(
-      result.Items?.map(async (item) => {
-        const imageKey = item.imageKey?.S; //Is image key a string?
+    const logos: Logo[] = await Promise.all(
+      transformedItems.map(async (item) => {
+        const imageKey = item.imageKey;
         if (!imageKey) {
           throw new Error('Image key is missing or invalid');
         }
@@ -26,6 +37,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
           Key: imageKey,
         };
 
+        //Get signed url for each logo from S3
         const signedUrl = await getSignedUrl(
           s3Client,
           new GetObjectCommand(getObjectParams),
@@ -35,8 +47,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         return {
           ...item,
           imageUrl: signedUrl
-        };
-      }) || []
+        } as Logo;
+      })
     );
 
     return {
