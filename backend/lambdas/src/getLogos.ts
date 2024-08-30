@@ -2,8 +2,10 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import {DynamoDBClient, ScanCommand} from '@aws-sdk/client-dynamodb';
 import {GetObjectCommand, GetObjectCommandInput, S3Client} from '@aws-sdk/client-s3';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
+
 import {transformDynamoDBItem} from './utils/transformDynamoDbItem';
 import {Logo} from './models/Logo';
+import {createErrorResponse, createSuccessResponse} from './models/Response';
 
 const dynamodbClient = new DynamoDBClient({});
 const s3Client = new S3Client({});
@@ -45,15 +47,9 @@ export const handler: APIGatewayProxyHandler = async () => {
       })
     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(logos)
-    };
+    return createSuccessResponse(logos);
   } catch (error) {
     console.log(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Error retrieving logos' }),
-    };
+    return createErrorResponse('Error retrieving logos');
   }
 };

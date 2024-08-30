@@ -5,12 +5,3 @@ export interface Logo {
   name: string;
   imageUrl: string;
 }
-
-interface Error {
-  message: string;
-}
-
-export interface LogoResponse {
-  body: Logo[] | string;
-  statusCode: number;
-}

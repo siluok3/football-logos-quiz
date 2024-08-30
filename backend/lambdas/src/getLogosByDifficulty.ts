@@ -1,9 +1,11 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
-import {Logo} from './models/Logo';
 import {DynamoDBClient, QueryCommand, QueryCommandInput} from '@aws-sdk/client-dynamodb';
 import {GetObjectCommand, GetObjectCommandInput, S3Client} from '@aws-sdk/client-s3';
-import {transformDynamoDBItem} from './utils/transformDynamoDbItem';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
+
+import {Logo} from './models/Logo';
+import {transformDynamoDBItem} from './utils/transformDynamoDbItem';
+import {createErrorResponse, createSuccessResponse} from './models/Response';
 
 const dynamodbClient = new DynamoDBClient({});
 const s3Client = new S3Client({})
@@ -14,10 +16,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const difficulty = event.queryStringParameters?.difficulty;
     if (!difficulty) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Difficulty parameter is required' })
-      }
+      return createErrorResponse('Difficulty parameter is required', 400);
     }
 
     const queryParams: QueryCommandInput = {
@@ -58,15 +57,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       })
     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(logos),
-    };
+    return createSuccessResponse(logos);
   } catch (error) {
     console.log(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Error retrieving logos by difficulty' }),
-    };
+    return createErrorResponse('Error retrieving logos by difficulty');
   }
 }
