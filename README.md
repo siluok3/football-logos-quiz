@@ -25,7 +25,7 @@ npm runinstall:backend
 ```
 
 ## Test the application on a real device
-Download the Expo application on your mobile device and follow the instructions
+Download the Expo Go application on your mobile device and follow the instructions
 on how to run the application on your mobile. To start serving the frontend
 execute
 ```
