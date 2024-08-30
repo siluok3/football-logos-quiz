@@ -9,6 +9,8 @@ type Logo = {
 
 const client  = new DynamoDBClient({ region: 'eu-central-1' });
 
+//Edit the list of logos that you would like to add
+//TODO remove id
 const logos: Logo[] = [
   { id: 1, name: 'Real Madrid', difficulty: 'easy', imageKey: 'realmadrid.png' },
   { id: 2, name: 'Barcelona', difficulty: 'easy', imageKey: 'barcelona.png' },

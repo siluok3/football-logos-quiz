@@ -2,7 +2,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import {DynamoDBClient, ScanCommand} from '@aws-sdk/client-dynamodb';
 import {GetObjectCommand, GetObjectCommandInput, S3Client} from '@aws-sdk/client-s3';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
-import {transformDynamoDBItem} from './helper/transformDynamoDbItem';
+import {transformDynamoDBItem} from './utils/transformDynamoDbItem';
 
 interface Logo {
   imageKey: string;
@@ -20,6 +20,7 @@ const bucketName = process.env.LOGOS_BUCKET_NAME;
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     //Logos metadata
+    //TODO maybe try out dynamodbDocumentClient?
     const result = await dynamodbClient.send(new ScanCommand({ TableName: tableName }));
 
     const transformedItems = result.Items?.map(transformDynamoDBItem) || []
