@@ -3,21 +3,14 @@ import {DynamoDBClient, ScanCommand} from '@aws-sdk/client-dynamodb';
 import {GetObjectCommand, GetObjectCommandInput, S3Client} from '@aws-sdk/client-s3';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
 import {transformDynamoDBItem} from './utils/transformDynamoDbItem';
-
-interface Logo {
-  imageKey: string;
-  difficulty: string;
-  id: string;
-  name: string;
-  imageUrl: string;
-}
+import {Logo} from './models/Logo';
 
 const dynamodbClient = new DynamoDBClient({});
 const s3Client = new S3Client({});
 const tableName = process.env.LOGOS_TABLE_NAME;
 const bucketName = process.env.LOGOS_BUCKET_NAME;
 
-export const handler: APIGatewayProxyHandler = async (event) => {
+export const handler: APIGatewayProxyHandler = async () => {
   try {
     //Logos metadata
     //TODO maybe try out dynamodbDocumentClient?

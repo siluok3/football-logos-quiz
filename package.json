@@ -5,7 +5,7 @@
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend/cdk && npm install",
     "start:frontend": "cd frontend && npx expo start",
-    "deploy:backend": "cd backend/cdk && npx cdk deploy",
+    "deploy:backend": "cd backend && npm run build && cd cdk && npx cdk deploy",
     "seed:db": "cd backend/scripts/data && npx ts-node addLogosToDynamoDB.ts"
   },
   "author": "Kiriakos Papachristou",
