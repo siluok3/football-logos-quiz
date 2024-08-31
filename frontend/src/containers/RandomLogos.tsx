@@ -1,10 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Button, Image, StyleSheet, TextInput, View, Text, Animated} from 'react-native'
+import {Button, Image, StyleSheet, TextInput, View, Animated} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
 import {getLogosFromBackend, Logo} from '../services/logoService'
+import Loading from '../components/UI/Loading';
+import CustomAlert from '../components/UI/CustomAlert';
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
@@ -15,25 +17,31 @@ const RandomLogos: React.FC = () => {
   const [userGuess, setUserGuess] = useState('')
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [remainingLogos, setRemainingLogos] = useState<Logo[]>(logos)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [showCongrats, setShowCongrats] = useState(false)
 
   const correctAnimationValue = useRef(new Animated.Value(0)).current
   const wrongAnimationValue = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     const fetchLogos = async () => {
+      setLoading(true)
       try {
         const data = await getLogosFromBackend('easy')
         setLogos(data)
         if (data.length > 0) {
           setCurrentLogo(data[0]);
           setRemainingLogos(data);
+          setLoading(false)
         }
       } catch (err) {
+        setLoading(false)
         console.error('Error fetching logos:', err)
       }
     }
 
     fetchLogos()
+      //.finally(() => setLoading(false))
   }, [])
 
   const animateCorrectAnswer = () => {
@@ -101,14 +109,24 @@ const RandomLogos: React.FC = () => {
       const nextLogo: Logo = updatedRemainingLogos[Math.floor(Math.random() * updatedRemainingLogos.length)]
       setCurrentLogo(nextLogo)
     } else {
-      alert('Congratulation. All logos were found!')
+      setRemainingLogos(updatedRemainingLogos)
+      setShowCongrats(true)
     }
+  }
+
+  const handleCloseAlert = () => {
+    setShowCongrats(false)
+    navigation.navigate('Main')
+  }
+
+  if (loading) {
+    return <Loading />
   }
 
   return (
     <View style={styles.container}>
       <Button title="Back" onPress={handleBack} />
-      {remainingLogos.length > 0 ? (
+      {!showCongrats ? (
         <>
           {currentLogo && (<Image source={{ uri: currentLogo.imageUrl }} style={styles.logo} />)}
           <TextInput
@@ -152,7 +170,7 @@ const RandomLogos: React.FC = () => {
           )}
         </>
       ) : (
-        <Text>Congrats! All logos have been found. Go back to play again</Text>
+        <CustomAlert visible={showCongrats} onClose={handleCloseAlert} />
       )}
     </View>
   )
