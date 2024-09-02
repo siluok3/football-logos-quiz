@@ -1,7 +1,7 @@
 # Football Logos Quiz App
-A mobile application that lets you guess logos from different football teams
+A mobile serverless application that lets you guess logos from different football teams
 
-it is developed on the frontend with `React Native` and on the backend it is using
+it is developed on the frontend with `React Native` and `Typescript` and on the backend it is using
 `AWS lambdas` together with `DynamoDb`, `S3 Bucket` and `API Gateway`
 
 Backend is deployed to AWS and the frontend is using expo.
