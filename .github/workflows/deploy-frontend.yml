@@ -6,6 +6,7 @@ on:
       - 'frontend/**'
     branches:
       - main
+  workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
   build-and-deploy:
