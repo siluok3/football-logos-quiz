@@ -19,7 +19,7 @@ const Main: React.FC = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Welcome to Football Logo Quiz</Text>
         <Button title="Random Logos" onPress={handleRandomLogosPress} />
-        {'Logo api url: ' + process.env.LOGO_API_URL}
+        <Text>{'LOGO API URL -> PIPELINE: ' + process.env.LOGO_API_URL}</Text>
       </View>
     </Layout>
   )
