@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
-import {getLogosFromBackend, Logo} from '../services/logoService'
+import {getLogosFromBackend, Logo, sendGameCompletionMessage} from '../services/logoService'
 import Loading from '../components/UI/Loading';
 import CustomAlert from '../components/UI/CustomAlert';
 
@@ -111,6 +111,7 @@ const RandomLogos: React.FC = () => {
     } else {
       setRemainingLogos(updatedRemainingLogos)
       setShowCongrats(true)
+      sendGameCompletionMessage()
     }
   }
 
