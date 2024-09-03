@@ -32,4 +32,4 @@ jobs:
         working-directory: ./frontend
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas update --branch main --message "Automated update from GitHub Actions"
+        run: eas update --auto --message "Automated update from GitHub Actions" --verbose
