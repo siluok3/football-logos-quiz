@@ -5,7 +5,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as iam from 'aws-cdk-lib/aws-iam';
-
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path';
 
 export class LogosStack extends cdk.Stack {
@@ -31,6 +31,13 @@ export class LogosStack extends cdk.Stack {
       partitionKey: { name: 'difficulty', type: dynamodb.AttributeType.STRING },
       projectionType: dynamodb.ProjectionType.ALL
     })
+
+    // SQS Queues
+    const logQueue = new sqs.Queue(this, 'LogQueue', {
+      queueName: 'GameCompletionQueue',
+      retentionPeriod: cdk.Duration.days(4),
+    });
+
 
     // Lambdas
     // Lambda function to fetch logos
@@ -72,17 +79,34 @@ export class LogosStack extends cdk.Stack {
       ],
     }));
 
+    // Lambda to send game Completion SQS messages
+    const sendGameCompletionMessageLambda = new lambda.Function(this, 'SendGameCompletionMessageFunction', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambdas/dist')),
+      handler: 'sendGameCompletionMessage.handler',
+      environment: {
+        LOG_QUEUE_URL: logQueue.queueUrl,
+      }
+    });
+
+    // Grant access to send log messages
+    logQueue.grantSendMessages(sendGameCompletionMessageLambda);
+
     // API Gateway endpoints
     const api = new apigateway.RestApi(this, 'LogosApi', {
       restApiName: 'Logos Service',
       description: 'This services fetches football logos'
     });
 
-    const getLogosIntegration = new apigateway.LambdaIntegration(getLogosLambda)
-    api.root.addMethod('GET', getLogosIntegration)
+    const getLogosIntegration = new apigateway.LambdaIntegration(getLogosLambda);
+    api.root.addMethod('GET', getLogosIntegration);
 
-    const getLogosByDifficultyIntegration = new apigateway.LambdaIntegration(getLogosByDifficultyLambda)
+    const getLogosByDifficultyIntegration = new apigateway.LambdaIntegration(getLogosByDifficultyLambda);
     const difficultyResource = api.root.addResource('logosByDifficulty');
-    difficultyResource.addMethod('GET', getLogosByDifficultyIntegration)
+    difficultyResource.addMethod('GET', getLogosByDifficultyIntegration);
+
+    const sendGameCompletionIntegration = new apigateway.LambdaIntegration(sendGameCompletionMessageLambda);
+    const gameCompletionResource = api.root.addResource('sendGameCompletion');
+    gameCompletionResource.addMethod('POST', sendGameCompletionIntegration);
   }
 }
