@@ -4,4 +4,8 @@ export interface Logo {
   id: string;
   name: string;
   imageUrl: string;
+  enabled : boolean;
+  league: string;
+  country: string;
+  division: number;
 }

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Button, Image, StyleSheet, TextInput, View, Animated} from 'react-native'
+import {Button, Image, StyleSheet, TextInput, View, Animated, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
@@ -9,6 +9,8 @@ import Loading from '../components/UI/Loading';
 import CustomAlert from '../components/UI/CustomAlert';
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
+
+const { width, height } = Dimensions.get('window')
 
 const RandomLogos: React.FC = () => {
   const navigation = useNavigation<RandomLogosScreenNavigationProp>()
@@ -27,7 +29,7 @@ const RandomLogos: React.FC = () => {
     const fetchLogos = async () => {
       setLoading(true)
       try {
-        const data = await getLogosFromBackend('easy')
+        const data = await getLogosFromBackend()
         setLogos(data)
         if (data.length > 0) {
           setCurrentLogo(data[0]);
@@ -78,10 +80,6 @@ const RandomLogos: React.FC = () => {
     ]).start()
   }
 
-  const handleBack = () => {
-    navigation.goBack()
-  }
-
   const handleGuessChange = (text: string) => {
     setUserGuess(text)
   }
@@ -124,73 +122,75 @@ const RandomLogos: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Button title="Back" onPress={handleBack} />
-      {!showCongrats ? (
-        <>
-          {currentLogo && (<Image source={{ uri: currentLogo.imageUrl }} style={styles.logo} />)}
-          <TextInput
-            style={styles.input}
-            placeholder="Enter team name"
-            value={userGuess}
-            onChangeText={handleGuessChange}
-          />
-          <Button title="Check Answer" onPress={handleCheckAnswer} />
-          {isCorrect === true && (
-            <Animated.Text
-              style={[
-                styles.correctText,
-                {
-                  opacity: correctAnimationValue,
-                  transform: [{ scale: correctAnimationValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.8, 1.2],
-                    })}],
-                },
-              ]}
-            >
-              Correct!
-            </Animated.Text>
-          )}
-          {isCorrect === false && (
-            <Animated.Text
-              style={[
-                styles.wrongText,
-                {
-                  opacity: wrongAnimationValue,
-                  transform: [{ scale: wrongAnimationValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0.8, 1.2],
-                    })}],
-                },
-              ]}
-            >
-              Try again
-            </Animated.Text>
-          )}
-        </>
-      ) : (
-        <CustomAlert visible={showCongrats} onClose={handleCloseAlert} />
-      )}
-    </View>
+      <View style={styles.container}>
+        {!showCongrats ? (
+          <>
+            {currentLogo && (<Image source={{ uri: currentLogo.imageUrl }} style={styles.logo} />)}
+            <TextInput
+              style={styles.input}
+              placeholder="Enter team name"
+              value={userGuess}
+              onChangeText={handleGuessChange}
+            />
+            <Button title="Check Answer" onPress={handleCheckAnswer} />
+            {isCorrect === true && (
+              <Animated.Text
+                style={[
+                  styles.correctText,
+                  {
+                    opacity: correctAnimationValue,
+                    transform: [{ scale: correctAnimationValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.8, 1.2],
+                      })}],
+                  },
+                ]}
+              >
+                Correct!
+              </Animated.Text>
+            )}
+            {isCorrect === false && (
+              <Animated.Text
+                style={[
+                  styles.wrongText,
+                  {
+                    opacity: wrongAnimationValue,
+                    transform: [{ scale: wrongAnimationValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.8, 1.2],
+                      })}],
+                  },
+                ]}
+              >
+                Try again
+              </Animated.Text>
+            )}
+          </>
+        ) : (
+          <CustomAlert visible={showCongrats} onClose={handleCloseAlert} />
+        )}
+      </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    backgroundColor: '#fff',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 20,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: width * 0.6,
+    height: height * 0.3,
     marginBottom: 20,
+    resizeMode: 'contain',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
     width: '80%',
     marginBottom: 20,

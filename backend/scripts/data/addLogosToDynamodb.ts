@@ -5,6 +5,10 @@ type Logo = {
   name: string;
   difficulty: 'easy' | 'medium' | 'hard';
   imageKey : string;
+  enabled : boolean;
+  league: string;
+  country: string;
+  division: number;
 }
 
 const client  = new DynamoDBClient({ region: 'eu-central-1' });
@@ -12,9 +16,8 @@ const client  = new DynamoDBClient({ region: 'eu-central-1' });
 //Edit the list of logos that you would like to add
 //TODO remove id
 const logos: Logo[] = [
-  { id: 1, name: 'Real Madrid', difficulty: 'easy', imageKey: 'realmadrid.png' },
-  { id: 2, name: 'Barcelona', difficulty: 'easy', imageKey: 'barcelona.png' },
-  { id: 3, name: 'Chelsea', difficulty: 'easy', imageKey: 'chelsea.png' },
+  { id: 1, name: 'Real Madrid', difficulty: 'easy', imageKey: 'realmadrid.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
+  { id: 2, name: 'Barcelona', difficulty: 'easy', imageKey: 'barcelona.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
 ];
 
 const putLogoData = async (logo: Logo) => {
@@ -25,6 +28,10 @@ const putLogoData = async (logo: Logo) => {
       name: { S: logo.name },
       difficulty: { S: logo.difficulty },
       imageKey: { S: logo.imageKey },
+      enabled: { BOOL: logo.enabled },
+      league: { S: logo.league },
+      country: { S: logo.country },
+      division: { N: logo.division.toString() },
     }
   };
 

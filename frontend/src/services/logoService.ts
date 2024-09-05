@@ -4,17 +4,18 @@ export interface Logo {
   imageKey: string;
   difficulty: 'easy' | 'medium' | 'hard';
   imageUrl: string;
+  enabled : boolean;
+  league: string;
+  country: string;
+  division: number;
 }
 
-export const getLogosFromBackend = async (difficulty: 'easy' | 'medium' | 'hard') => {
+export const getLogosFromBackend = async () => {
   try {
     const response = await fetch(`${process.env.LOGO_API_URL}`)
     const logos: Logo[] = await response.json()
 
-    //TODO this should be done on the backend
-    const filteredLogos = logos.filter(logo => logo.difficulty === difficulty)
-
-    return shuffleArray(filteredLogos)
+    return shuffleArray(logos)
   } catch (error) {
     console.error('Error fetching logos:', error);
     return []
