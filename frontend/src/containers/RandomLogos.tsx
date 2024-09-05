@@ -1,5 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Button, Image, StyleSheet, TextInput, View, Animated, Dimensions } from 'react-native'
+import {
+  Button,
+  Image,
+  StyleSheet,
+  TextInput,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
@@ -7,6 +16,7 @@ import { RootStackParamList } from '../navigation/AppNavigator'
 import {getLogosFromBackend, Logo, sendGameCompletionMessage} from '../services/logoService'
 import Loading from '../components/UI/Loading';
 import CustomAlert from '../components/UI/CustomAlert';
+import AnimatedAnswerResponse from '../components/UI/AnimatedAnswerResponse';
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
@@ -123,7 +133,8 @@ const RandomLogos: React.FC = () => {
   }
 
   return (
-      <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {!showCongrats ? (
           <>
             {currentLogo && (<Image source={{ uri: currentLogo.imageUrl }} style={styles.logo} />)}
@@ -132,56 +143,34 @@ const RandomLogos: React.FC = () => {
               placeholder="Enter team name"
               value={userGuess}
               onChangeText={handleGuessChange}
+              onSubmitEditing={handleCheckAnswer}
+              returnKeyType="done"
             />
             <Button title="Check Answer" onPress={handleCheckAnswer} />
-            {isCorrect === true && (
-              <Animated.Text
-                style={[
-                  styles.correctText,
-                  {
-                    opacity: correctAnimationValue,
-                    transform: [{ scale: correctAnimationValue.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.8, 1.2],
-                      })}],
-                  },
-                ]}
-              >
-                Correct!
-              </Animated.Text>
-            )}
-            {isCorrect === false && (
-              <Animated.Text
-                style={[
-                  styles.wrongText,
-                  {
-                    opacity: wrongAnimationValue,
-                    transform: [{ scale: wrongAnimationValue.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.8, 1.2],
-                      })}],
-                  },
-                ]}
-              >
-                Try again
-              </Animated.Text>
-            )}
+            {isCorrect
+              ? <AnimatedAnswerResponse styles={styles.correctText} animatedValue={correctAnimationValue} text="Correct!" />
+              : <AnimatedAnswerResponse styles={styles.wrongText} animatedValue={wrongAnimationValue} text="Try again" />
+            }
           </>
         ) : (
           <CustomAlert visible={showCongrats} onClose={handleCloseAlert} />
         )}
-      </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 40,
     backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
   logo: {
     width: width * 0.6,
