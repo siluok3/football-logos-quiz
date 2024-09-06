@@ -13,7 +13,13 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
-import {getLogosFromBackend, Logo, sendGameCompletionMessage} from '../services/logoService'
+import {
+  getLogosBySearchTerm,
+  getRandomLogos,
+  Logo,
+  LogosBySearchTermInput,
+  sendGameCompletionMessage
+} from '../services/logoService'
 import Loading from '../components/UI/Loading';
 import CustomAlert from '../components/UI/CustomAlert';
 import AnimatedAnswerResponse from '../components/UI/AnimatedAnswerResponse';
@@ -22,8 +28,17 @@ type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamL
 
 const { width, height } = Dimensions.get('window')
 
-const RandomLogos: React.FC = () => {
+interface RandomLogosProps {
+  route?: {
+    params: LogosBySearchTermInput
+  }
+}
+
+const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
+  const { difficulty, country } = route?.params || {}
+
   const navigation = useNavigation<RandomLogosScreenNavigationProp>()
+
   const [logos, setLogos] = useState<Logo[]>([])
   const [currentLogo, setCurrentLogo] = useState<Logo | null>(null)
   const [userGuess, setUserGuess] = useState('')
@@ -39,7 +54,13 @@ const RandomLogos: React.FC = () => {
     const fetchLogos = async () => {
       setLoading(true)
       try {
-        const data = await getLogosFromBackend()
+        let data
+        if (difficulty || country) {
+          data = await getLogosBySearchTerm({ difficulty, country })
+        } else {
+          data = await getRandomLogos()
+        }
+
         setLogos(data)
         if (data.length > 0) {
           setCurrentLogo(data[0]);
@@ -54,7 +75,7 @@ const RandomLogos: React.FC = () => {
 
     fetchLogos()
       //.finally(() => setLoading(false))
-  }, [])
+  }, [difficulty, country])
 
   const animateCorrectAnswer = () => {
     Animated.sequence([

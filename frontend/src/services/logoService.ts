@@ -10,12 +10,34 @@ export interface Logo {
   division: number;
 }
 
-export const getLogosFromBackend = async () => {
+export interface LogosBySearchTermInput {
+  difficulty?: string
+  country?: string //TODO create a type of available countries
+}
+
+export const getRandomLogos = async () => {
   try {
     const response = await fetch(`${process.env.LOGO_API_URL}`)
     const logos: Logo[] = await response.json()
 
-    return shuffleArray(logos)
+    return logos.length ? shuffleArray(logos) : logos
+  } catch (error) {
+    console.error('Error fetching logos:', error);
+    return []
+  }
+}
+
+export const getLogosBySearchTerm = async ({ difficulty, country }: LogosBySearchTermInput) => {
+  try {
+    const url = new URL(`${process.env.LOGO_API_URL}/logosBy`)
+
+    if (difficulty) url.searchParams.append('difficulty', difficulty)
+    if (country) url.searchParams.append('country', country)
+
+    const response = await fetch(url)
+    const logos: Logo[] = await response.json()
+
+    return logos.length ? shuffleArray(logos) : logos
   } catch (error) {
     console.error('Error fetching logos:', error);
     return []

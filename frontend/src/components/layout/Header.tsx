@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#4CAF50', // A nice green color for the header
+    backgroundColor: '#4CAF50',
     alignItems: 'center',
   },
   headerText: {
