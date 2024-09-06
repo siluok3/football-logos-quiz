@@ -11,14 +11,19 @@ const Main: React.FC = () => {
   const navigation = useNavigation<MainScreenNavigationProp>()
 
   const handleRandomLogosPress = () => {
-    navigation.navigate('RandomLogos')
+    navigation.navigate('RandomLogos', {})
+  }
+
+  const handleSelectionScreenPress = () => {
+    navigation.navigate('Selection')
   }
 
   return (
     <Layout>
       <View style={styles.container}>
         <Text style={styles.title}>Welcome to Football Logo Quiz</Text>
-        <Button title="Random Logos" onPress={handleRandomLogosPress} />
+        <Button title="Play All Logos" onPress={handleRandomLogosPress} />
+        <Button title="Select Logos" onPress={handleSelectionScreenPress} />
       </View>
     </Layout>
   )
