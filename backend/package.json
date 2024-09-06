@@ -16,9 +16,11 @@
     "@aws-sdk/s3-request-presigner": "^3.637.0",
     "@types/aws-lambda": "^8.10.145",
     "aws-lambda": "^1.0.7",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.5.1"
+    "@types/node": "^22.5.1",
+    "@types/uuid": "^10.0.0"
   }
 }

@@ -21,7 +21,7 @@ export class LogosStack extends cdk.Stack {
 
     // DynamoDB Table for Logo Metadata
     const logosTable = new dynamodb.Table(this, 'LogosTable', {
-      partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       tableName: 'Logos'
     });
