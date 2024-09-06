@@ -25,12 +25,18 @@ export class LogosStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       tableName: 'Logos'
     });
-    // Add secondary index for DifficultyIndex
+    // Add secondary index for `difficulty`
     logosTable.addGlobalSecondaryIndex({
       indexName: 'DifficultyIndex',
       partitionKey: { name: 'difficulty', type: dynamodb.AttributeType.STRING },
       projectionType: dynamodb.ProjectionType.ALL
     })
+    // Add secondary index for `country`
+    logosTable.addGlobalSecondaryIndex({
+      indexName: 'CountryIndex',
+      partitionKey: { name: 'country', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
 
     // SQS Queues
     const logQueue = new sqs.Queue(this, 'LogQueue', {
@@ -55,11 +61,11 @@ export class LogosStack extends cdk.Stack {
     logosTable.grantReadData(getLogosLambda);
     logosBucket.grantRead(getLogosLambda);
 
-    // Lambda function to fetch logos by difficulty
-    const getLogosByDifficultyLambda = new lambda.Function(this, 'GetLogosByDifficultyFunction', {
+    // Lambda function to fetch logos by search term
+    const getLogosBySearchTermLambda = new lambda.Function(this, 'GetLogosBySearchTermFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, '../../lambdas/dist')),
-      handler: 'getLogosByDifficulty.handler',
+      handler: 'getLogosBySearchTerm.handler',
       environment: {
         LOGOS_TABLE_NAME: logosTable.tableName,
         LOGOS_BUCKET_NAME: logosBucket.bucketName
@@ -67,15 +73,16 @@ export class LogosStack extends cdk.Stack {
     });
 
     // Grant access to getLogosByDifficulty lambda for DynamoDB and S3 bucket
-    logosTable.grantReadData(getLogosByDifficultyLambda);
-    logosBucket.grantRead(getLogosByDifficultyLambda);
+    logosTable.grantReadData(getLogosBySearchTermLambda);
+    logosBucket.grantRead(getLogosBySearchTermLambda);
 
     // Additional permissions for accessing the DifficultyIndex
-    getLogosByDifficultyLambda.addToRolePolicy(new iam.PolicyStatement({
+    getLogosBySearchTermLambda.addToRolePolicy(new iam.PolicyStatement({
       actions: ['dynamodb:Query'],
       resources: [
         logosTable.tableArn,
-        `${logosTable.tableArn}/index/DifficultyIndex`
+        `${logosTable.tableArn}/index/DifficultyIndex`,
+        `${logosTable.tableArn}/index/CountryIndex`
       ],
     }));
 
@@ -101,9 +108,9 @@ export class LogosStack extends cdk.Stack {
     const getLogosIntegration = new apigateway.LambdaIntegration(getLogosLambda);
     api.root.addMethod('GET', getLogosIntegration);
 
-    const getLogosByDifficultyIntegration = new apigateway.LambdaIntegration(getLogosByDifficultyLambda);
-    const difficultyResource = api.root.addResource('logosByDifficulty');
-    difficultyResource.addMethod('GET', getLogosByDifficultyIntegration);
+    const getLogosBySearchTermIntegration = new apigateway.LambdaIntegration(getLogosBySearchTermLambda);
+    const logosByResource = api.root.addResource('logosBy');
+    logosByResource.addMethod('GET', getLogosBySearchTermIntegration);
 
     const sendGameCompletionIntegration = new apigateway.LambdaIntegration(sendGameCompletionMessageLambda);
     const gameCompletionResource = api.root.addResource('sendGameCompletion');

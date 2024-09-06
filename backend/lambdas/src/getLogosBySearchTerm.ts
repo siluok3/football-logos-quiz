@@ -15,18 +15,37 @@ const bucketName = process.env.LOGOS_BUCKET_NAME;
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
     const difficulty = event.queryStringParameters?.difficulty;
-    if (!difficulty) {
-      return createErrorResponse('Difficulty parameter is required', 400);
+    const country = event.queryStringParameters?.country;
+    if (!difficulty && !country) {
+      return createErrorResponse('At least one parameter (difficulty or country) is required', 400);
     }
 
     const queryParams: QueryCommandInput = {
       TableName: tableName,
-      IndexName: 'DifficultyIndex',
-      KeyConditionExpression: 'difficulty = :difficulty',
+      KeyConditionExpression: '',
       ExpressionAttributeValues: {
-        ':difficulty': { S: difficulty },
-      }
+        ':enabled': { BOOL: true}
+      },
+      FilterExpression: 'enabled = :enabled'
     };
+
+    //TODO more dynamic in case we want to add more conditions
+    if (difficulty && country) {
+      queryParams.IndexName = 'DifficultyIndex';
+      queryParams.KeyConditionExpression = 'difficulty = :difficulty';
+      queryParams.ExpressionAttributeValues![':difficulty'] = { S: difficulty };
+
+      queryParams.FilterExpression += ' AND country = :country';
+      queryParams.ExpressionAttributeValues![':country'] = { S: country };
+    } else if (difficulty) {
+      queryParams.IndexName = 'DifficultyIndex';
+      queryParams.KeyConditionExpression = 'difficulty = :difficulty';
+      queryParams.ExpressionAttributeValues![':difficulty'] = { S: difficulty };
+    } else if (country) {
+      queryParams.IndexName = 'CountryIndex';
+      queryParams.KeyConditionExpression = 'country = :country';
+      queryParams.ExpressionAttributeValues![':country'] = { S: country };
+    }
 
     const result = await dynamodbClient.send(new QueryCommand(queryParams));
 
@@ -60,6 +79,6 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     return createSuccessResponse(logos);
   } catch (error) {
     console.log(error);
-    return createErrorResponse('Error retrieving logos by difficulty');
+    return createErrorResponse('Error retrieving logos by search term');
   }
 }
