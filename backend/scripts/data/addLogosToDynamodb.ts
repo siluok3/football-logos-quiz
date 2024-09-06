@@ -14,6 +14,7 @@ export type LogoMetadata = {
 const client  = new DynamoDBClient({ region: 'eu-central-1' });
 
 const logosMetadata: LogoMetadata[] = [
+  //La Liga
   { name: 'Real Madrid', difficulty: 'easy', imageKey: 'realmadrid.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
   { name: 'Barcelona', difficulty: 'easy', imageKey: 'barcelona.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
   { name: 'Leganes', difficulty: 'hard', imageKey: 'cdleganes.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
@@ -35,6 +36,27 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Villareal', difficulty: 'easy', imageKey: 'villareal.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
   { name: 'Mallorca', difficulty: 'medium', imageKey: 'rcdmallorca.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
   { name: 'Girona', difficulty: 'hard', imageKey: 'girona.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
+  //Premier League
+  { name: 'Bournemouth', difficulty: 'hard', imageKey: 'afcbournemouth.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Arsenal', difficulty: 'easy', imageKey: 'arsenal.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Aston Vila', difficulty: 'medium', imageKey: 'astonvila.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Brentford', difficulty: 'hard', imageKey: 'brentford.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Brighton', difficulty: 'medium', imageKey: 'brighton.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Chelsea', difficulty: 'easy', imageKey: 'chelsea.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Crystal Palace', difficulty: 'hard', imageKey: 'crystalpalace.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Everton', difficulty: 'medium', imageKey: 'everton.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Fulham', difficulty: 'medium', imageKey: 'fulham.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Ipswich', difficulty: 'hard', imageKey: 'ipswich.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Leicester', difficulty: 'medium', imageKey: 'leicester.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Liverpool', difficulty: 'easy', imageKey: 'liverpool.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Manchester City', difficulty: 'easy', imageKey: 'manchestercity.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Manchester United', difficulty: 'easy', imageKey: 'manchesterunited.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Newcastle', difficulty: 'medium', imageKey: 'newcastle.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Nottigham', difficulty: 'hard', imageKey: 'nottighamforest.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Southampton', difficulty: 'medium', imageKey: 'southampton.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Tottenham', difficulty: 'medium', imageKey: 'tottenham.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'West Ham', difficulty: 'medium', imageKey: 'westham.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  { name: 'Wolves', difficulty: 'medium', imageKey: 'wolves.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
 ];
 
 const deleteAllItems = async () => {
