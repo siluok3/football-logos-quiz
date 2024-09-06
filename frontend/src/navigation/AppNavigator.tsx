@@ -19,9 +19,9 @@ const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="RandomLogos" component={RandomLogos} />
-        <Stack.Screen name="Selection" component={SelectionScreen} />
+        <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
+        <Stack.Screen name="RandomLogos" component={RandomLogos} options={{ title: 'Find the Logos' }} />
+        <Stack.Screen name="Selection" component={SelectionScreen} options={{ title: 'Select Options' }} />
       </Stack.Navigator>
     </NavigationContainer>
   )
