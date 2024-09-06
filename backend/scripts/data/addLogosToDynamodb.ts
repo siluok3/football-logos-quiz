@@ -57,6 +57,27 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Tottenham', difficulty: 'medium', imageKey: 'tottenham.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
   { name: 'West Ham', difficulty: 'medium', imageKey: 'westham.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
   { name: 'Wolves', difficulty: 'medium', imageKey: 'wolves.png', enabled: true, league: 'Premier League', country: 'England', division: 1 },
+  //Serie A
+  { name: 'Atalanta', difficulty: 'medium', imageKey: 'atalanta.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Bologna', difficulty: 'medium', imageKey: 'bologna.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Cagliari', difficulty: 'hard', imageKey: 'cagliari.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Como', difficulty: 'hard', imageKey: 'como.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Empoli', difficulty: 'hard', imageKey: 'empoli.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Fiorentina', difficulty: 'medium', imageKey: 'fiorentina.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Genoa', difficulty: 'medium', imageKey: 'genoa.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Hellas Verona', difficulty: 'hard', imageKey: 'hellasverona.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Inter', difficulty: 'easy', imageKey: 'inter.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Juventus', difficulty: 'easy', imageKey: 'juventus.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Lazio', difficulty: 'easy', imageKey: 'lazio.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Lecce', difficulty: 'medium', imageKey: 'lecce.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Milan', difficulty: 'easy', imageKey: 'milan.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Monza', difficulty: 'hard', imageKey: 'monza.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Napoli', difficulty: 'easy', imageKey: 'napoli.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Parma', difficulty: 'medium', imageKey: 'parma.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Roma', difficulty: 'easy', imageKey: 'roma.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Torino', difficulty: 'medium', imageKey: 'torino.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Udinese', difficulty: 'medium', imageKey: 'udinese.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  { name: 'Venezia', difficulty: 'hard', imageKey: 'venezia.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
 ];
 
 const deleteAllItems = async () => {
