@@ -1,16 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {
-  Button,
+  Text,
   Image,
   StyleSheet,
   TextInput,
   Animated,
   Dimensions,
   KeyboardAvoidingView,
-  ScrollView,
+  ScrollView, View, TouchableOpacity,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import levenshtein from 'fast-levenshtein'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
 import {
@@ -41,11 +42,12 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
 
   const [logos, setLogos] = useState<Logo[]>([])
   const [currentLogo, setCurrentLogo] = useState<Logo | null>(null)
-  const [userGuess, setUserGuess] = useState('')
+  const [userGuess, setUserGuess] = useState<string>('')
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [remainingLogos, setRemainingLogos] = useState<Logo[]>(logos)
   const [loading, setLoading] = useState<boolean>(true)
-  const [showCongrats, setShowCongrats] = useState(false)
+  const [showCongrats, setShowCongrats] = useState<boolean>(false)
+  const [wrongAttempts, setWrongAttempts] = useState<number>(0)
 
   const correctAnimationValue = useRef(new Animated.Value(0)).current
   const wrongAnimationValue = useRef(new Animated.Value(0)).current
@@ -118,18 +120,40 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
   const handleCheckAnswer = () => {
     if (!currentLogo) return
 
-    if (currentLogo.name.toLowerCase().trimEnd() === userGuess.toLowerCase().trimEnd()) {
+    const userGuessNormalised = userGuess.toLowerCase().trimEnd()
+    const correctNameNormalised = currentLogo.name.toLowerCase().trimEnd()
+
+    const diffInCharacters = levenshtein.get(correctNameNormalised, userGuessNormalised)
+
+    if (diffInCharacters <= 3) {
       setIsCorrect(true)
       animateCorrectAnswer()
     } else {
       setIsCorrect(false)
+      setWrongAttempts(prev => prev + 1)
       animateWrongAnswer()
+
+      if (wrongAttempts >= 2) {
+        //TODO create custom alert
+        setTimeout(() => alert(`The correct answer was: ${currentLogo.name}`), 400)
+        handleNextLogo()
+      }
     }
+  }
+
+  const handleSkipLogo = () => {
+    setUserGuess('')
+    setIsCorrect(null)
+    setWrongAttempts(0)
+
+    const nextLogo: Logo = remainingLogos[Math.floor(Math.random() * remainingLogos.length)]
+    setCurrentLogo(nextLogo)
   }
 
   const handleNextLogo = () => {
     setUserGuess('')
     setIsCorrect(null)
+    setWrongAttempts(0)
 
     const updatedRemainingLogos = remainingLogos.filter(logo => logo.id !== currentLogo?.id)
 
@@ -167,7 +191,15 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
               onSubmitEditing={handleCheckAnswer}
               returnKeyType="done"
             />
-            <Button title="Check Answer" onPress={handleCheckAnswer} />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleCheckAnswer}>
+                <Text style={styles.buttonText}>Check Answer</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkipLogo}>
+                <Text style={styles.buttonText}>Skip</Text>
+              </TouchableOpacity>
+            </View>
             {isCorrect
               ? <AnimatedAnswerResponse styles={styles.correctText} animatedValue={correctAnimationValue} text="Correct!" />
               : <AnimatedAnswerResponse styles={styles.wrongText} animatedValue={wrongAnimationValue} text="Try again" />
@@ -218,6 +250,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FF5252',
     marginTop: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
+  },
+  skipButton: {
+    backgroundColor: '#FF5252',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
   },
 })
 
