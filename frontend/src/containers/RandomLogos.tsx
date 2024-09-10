@@ -14,16 +14,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import levenshtein from 'fast-levenshtein'
 
 import { RootStackParamList } from '../navigation/AppNavigator'
-import {
-  getLogosBySearchTerm,
-  getRandomLogos,
-  Logo,
-  LogosBySearchTermInput,
-  sendGameCompletionMessage
-} from '../services/logoService'
 import Loading from '../components/UI/Loading';
 import CustomAlert from '../components/UI/CustomAlert';
 import AnimatedAnswerResponse from '../components/UI/AnimatedAnswerResponse';
+import {useLogosBySearchTerm} from '../hooks/useLogosBySearchTerm';
+import {useRandomLogos} from '../hooks/useRandomLogos';
+import {Logo, LogosBySearchTermInput} from '../types/logo';
+import {useSendGameCompletion} from '../hooks/useSendGameCompletion';
+import Error from '../components/UI/Error';
 
 type RandomLogosScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'RandomLogos'>
 
@@ -40,44 +38,30 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
 
   const navigation = useNavigation<RandomLogosScreenNavigationProp>()
 
+  const { data: fetchedLogos, isLoading, error } = difficulty || country
+    ? useLogosBySearchTerm({ difficulty, country })
+    : useRandomLogos()
+  const { mutate: sendGameCompletion } = useSendGameCompletion()
+
   const [logos, setLogos] = useState<Logo[]>([])
   const [currentLogo, setCurrentLogo] = useState<Logo | null>(null)
   const [userGuess, setUserGuess] = useState<string>('')
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [remainingLogos, setRemainingLogos] = useState<Logo[]>(logos)
-  const [loading, setLoading] = useState<boolean>(true)
   const [showCongrats, setShowCongrats] = useState<boolean>(false)
   const [wrongAttempts, setWrongAttempts] = useState<number>(0)
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
 
   const correctAnimationValue = useRef(new Animated.Value(0)).current
   const wrongAnimationValue = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
-    const fetchLogos = async () => {
-      setLoading(true)
-      try {
-        let data
-        if (difficulty || country) {
-          data = await getLogosBySearchTerm({ difficulty, country })
-        } else {
-          data = await getRandomLogos()
-        }
-
-        setLogos(data)
-        if (data.length > 0) {
-          setCurrentLogo(data[0]);
-          setRemainingLogos(data);
-          setLoading(false)
-        }
-      } catch (err) {
-        setLoading(false)
-        console.error('Error fetching logos:', err)
-      }
+    if (fetchedLogos && fetchedLogos.length > 0) {
+      setCurrentLogo(fetchedLogos[0]);
+      setRemainingLogos(fetchedLogos)
     }
-
-    fetchLogos()
-      //.finally(() => setLoading(false))
-  }, [difficulty, country])
+  }, [fetchedLogos])
 
   const animateCorrectAnswer = () => {
     Animated.sequence([
@@ -134,9 +118,12 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
       animateWrongAnswer()
 
       if (wrongAttempts >= 2) {
-        //TODO create custom alert
-        setTimeout(() => alert(`The correct answer was: ${currentLogo.name}`), 400)
-        handleNextLogo()
+        setAlertMessage(`The correct answer was: ${currentLogo.name}`);
+        setShowAlert(true);
+
+        setTimeout(() => {
+          handleNextLogo();
+        }, 400)
       }
     }
   }
@@ -162,9 +149,13 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
       const nextLogo: Logo = updatedRemainingLogos[Math.floor(Math.random() * updatedRemainingLogos.length)]
       setCurrentLogo(nextLogo)
     } else {
+      sendGameCompletion({
+        userId: 'dummyUser123', //TODO update when we have authentication
+        completionTime: new Date().toISOString(),
+      })
+
       setRemainingLogos(updatedRemainingLogos)
       setShowCongrats(true)
-      sendGameCompletionMessage()
     }
   }
 
@@ -173,8 +164,12 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
     navigation.navigate('Main')
   }
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />
+  }
+
+  if (error) {
+    return <Error />
   }
 
   return (
@@ -192,12 +187,12 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
               returnKeyType="done"
             />
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={handleCheckAnswer}>
-                <Text style={styles.buttonText}>Check Answer</Text>
-              </TouchableOpacity>
-
               <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkipLogo}>
                 <Text style={styles.buttonText}>Skip</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.button} onPress={handleCheckAnswer}>
+                <Text style={styles.buttonText}>Check Answer</Text>
               </TouchableOpacity>
             </View>
             {isCorrect
@@ -206,8 +201,19 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
             }
           </>
         ) : (
-          <CustomAlert visible={showCongrats} onClose={handleCloseAlert} />
+          <CustomAlert
+            visible={showCongrats}
+            onClose={handleCloseAlert}
+            title='Congratulations! 🎉'
+            message='You found all the logos!'
+          />
         )}
+        <CustomAlert
+          visible={showAlert}
+          onClose={() => setShowAlert(false)}
+          title="Wrong Answer!"
+          message={alertMessage}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   )

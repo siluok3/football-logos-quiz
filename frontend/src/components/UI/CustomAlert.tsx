@@ -4,9 +4,11 @@ import {Animated, Modal, View, StyleSheet, Text, Button} from 'react-native';
 interface CustomAlertProps {
   visible: boolean
   onClose: () => void
+  title: string
+  message: string
 }
 
-const CustomAlert: React.FC<CustomAlertProps> = ({ visible, onClose }) => {
+const CustomAlert: React.FC<CustomAlertProps> = ({ visible, onClose, title, message }) => {
   const scaleValue = new Animated.Value(0)
 
   useEffect(() => {
@@ -34,9 +36,9 @@ const CustomAlert: React.FC<CustomAlertProps> = ({ visible, onClose }) => {
     >
       <View style={styles.overlay}>
         <Animated.View style={[styles.alertBox, { transform: [{ scale: scaleValue }] }]}>
-          <Text style={styles.congratulationsText}>Congratulations! 🎉</Text>
-          <Text style={styles.messageText}>You found all the logos!</Text>
-          <Button title="Go to Home" onPress={onClose} />
+          <Text style={styles.congratulationsText}>{title}</Text>
+          <Text style={styles.messageText}>{message}</Text>
+          <Button title="Got you" onPress={onClose} />
         </Animated.View>
       </View>
     </Modal>
