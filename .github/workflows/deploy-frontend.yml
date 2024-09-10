@@ -32,5 +32,5 @@ jobs:
         working-directory: ./frontend
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          LOGO_API_URL: ${{ secrets.LOGO_API_URL }}
+          API_URL: ${{ secrets.API_URL }}
         run: eas update --auto --message "Automated update from GitHub Actions"

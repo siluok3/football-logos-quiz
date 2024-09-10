@@ -1,73 +1,23 @@
-export interface Logo {
-  id: number;
-  name: string;
-  imageKey: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  imageUrl: string;
-  enabled : boolean;
-  league: string;
-  country: string;
-  division: number;
+import {Logo, LogosBySearchTermInput} from '../types/logo';
+import {shuffleArray} from '../utils/shuffleArray';
+
+export const fetchLogos = async (): Promise<Logo[]> => {
+  const response = await fetch(`${process.env.API_URL}/logos`)
+  if (!response.ok) throw new Error('Error fetching logos')
+  const logos: Logo[] = await response.json()
+
+  return logos.length ? shuffleArray(logos) : logos
 }
 
-export interface LogosBySearchTermInput {
-  difficulty?: string
-  country?: string //TODO create a type of available countries
-}
+export const fetchLogosBySearchTerm = async ({ difficulty, country }: LogosBySearchTermInput) => {
+  const url = new URL(`${process.env.API_URL}/logosBy`)
 
-export const getRandomLogos = async () => {
-  try {
-    const response = await fetch(`${process.env.LOGO_API_URL}`)
-    const logos: Logo[] = await response.json()
+  if (difficulty) url.searchParams.append('difficulty', difficulty)
+  if (country) url.searchParams.append('country', country)
 
-    return logos.length ? shuffleArray(logos) : logos
-  } catch (error) {
-    console.error('Error fetching logos:', error);
-    return []
-  }
-}
+  const response = await fetch(url.toString())
+  if (!response.ok) throw new Error('Error fetching logos')
+  const logos: Logo[] = await response.json()
 
-export const getLogosBySearchTerm = async ({ difficulty, country }: LogosBySearchTermInput) => {
-  try {
-    const url = new URL(`${process.env.LOGO_API_URL}/logosBy`)
-
-    if (difficulty) url.searchParams.append('difficulty', difficulty)
-    if (country) url.searchParams.append('country', country)
-
-    const response = await fetch(url)
-    const logos: Logo[] = await response.json()
-
-    return logos.length ? shuffleArray(logos) : logos
-  } catch (error) {
-    console.error('Error fetching logos:', error);
-    return []
-  }
-}
-
-export const sendGameCompletionMessage = async () => {
-  try {
-    const response = await fetch(`${process.env.LOGO_API_URL}/sendGameCompletion`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: 'dummyUser123',
-        completionTime: new Date().toISOString(),
-      }),
-    })
-
-    const data = await response.json()
-    if (response.ok) {
-      console.log('Game completion message sent:', data);
-    } else {
-      console.error('Failed to send game completion message:', data);
-    }
-  } catch (error) {
-    console.error('Error sending game completion message:', error);
-  }
-}
-
-const shuffleArray = (array: any[]) => {
-  return array.sort(() => Math.random() - 0.5)
+  return logos.length ? shuffleArray(logos) : logos
 }

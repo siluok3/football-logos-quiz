@@ -107,7 +107,8 @@ export class LogosStack extends cdk.Stack {
     });
 
     const getLogosIntegration = new apigateway.LambdaIntegration(getLogosLambda);
-    api.root.addMethod('GET', getLogosIntegration);
+    const logosResource = api.root.addResource('logos');
+    logosResource.addMethod('GET', getLogosIntegration);
 
     const getLogosBySearchTermIntegration = new apigateway.LambdaIntegration(getLogosBySearchTermLambda);
     const logosByResource = api.root.addResource('logosBy');
