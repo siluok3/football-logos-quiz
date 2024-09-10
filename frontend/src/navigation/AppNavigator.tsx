@@ -5,7 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import Main from '../containers/Main'
 import RandomLogos from '../containers/RandomLogos'
 import SelectionScreen from '../containers/SelectionScreen'
-import {LogosBySearchTermInput} from '../services/logoService';
+import {LogosBySearchTermInput} from '../types/logo';
 
 export type RootStackParamList = {
   Main: undefined

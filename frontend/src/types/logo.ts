@@ -10,7 +10,9 @@ export interface Logo {
   division: number;
 }
 
+export type AvailableCountries = 'England' | 'Spain' | 'Italy' | ''
+
 export interface LogosBySearchTermInput {
   difficulty?: string
-  country?: string //TODO create a type of available countries
+  country?: AvailableCountries
 }

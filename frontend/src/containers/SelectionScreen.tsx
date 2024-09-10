@@ -1,14 +1,15 @@
 import React from 'react'
 import {View, Image, StyleSheet, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {AvailableCountries} from '../types/logo';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/AppNavigator';
 
-interface SelectionScreenProps {
-  navigation: any
-}
+type SelectionScreenProps = NativeStackScreenProps<RootStackParamList, 'Selection'>
 
 const screenWidth = Dimensions.get('window').width;
 
 const SelectionScreen: React.FC<SelectionScreenProps> = ({ navigation }) => {
-  const handleSelection = (difficulty: string, country: string) => {
+  const handleSelection = (difficulty: string, country: AvailableCountries) => {
     navigation.navigate('RandomLogos', { difficulty, country });
   }
 
