@@ -60,6 +60,10 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
     if (fetchedLogos && fetchedLogos.length > 0) {
       setCurrentLogo(fetchedLogos[0]);
       setRemainingLogos(fetchedLogos)
+
+      fetchedLogos.forEach(logo => {
+        Image.prefetch(logo.imageUrl).then(() => console.log(`Image for team ${logo.name} was prefetched`))
+      })
     }
   }, [fetchedLogos])
 
