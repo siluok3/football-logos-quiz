@@ -97,6 +97,21 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Bochum', difficulty: 'medium', imageKey: 'vflbochum.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
   { name: 'Werder', difficulty: 'medium', imageKey: 'werderbremen.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
   { name: 'Wolfsburg', difficulty: 'medium', imageKey: 'wolfsburg.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  //Greek Superleague
+  { name: 'Aek', difficulty: 'medium', imageKey: 'aek.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Aris', difficulty: 'medium', imageKey: 'aris.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Asteras', difficulty: 'hard', imageKey: 'asterastripolis.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Atromitos', difficulty: 'hard', imageKey: 'atromitos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Kallithea', difficulty: 'hard', imageKey: 'kallithea.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Lamia', difficulty: 'hard', imageKey: 'lamia.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Levadiakos', difficulty: 'hard', imageKey: 'levadiakos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Ofi', difficulty: 'hard', imageKey: 'ofi.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Olympiakos', difficulty: 'easy', imageKey: 'olympiakos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Panathinaikos', difficulty: 'easy', imageKey: 'panathinaikos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Panetolikos', difficulty: 'hard', imageKey: 'panetolikos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Panserraikos', difficulty: 'hard', imageKey: 'panserraikos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Paok', difficulty: 'easy', imageKey: 'paok.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  { name: 'Volos', difficulty: 'hard', imageKey: 'volos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
 ];
 
 const deleteAllItems = async () => {
