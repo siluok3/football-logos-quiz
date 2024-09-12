@@ -50,6 +50,9 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={styles.flagButton} onPress={() => handleSelection('', 'Italy')}>
           <Image source={require('../../assets/flags/italian-flag.png')} style={styles.flagImage} />
         </TouchableOpacity>
+        <TouchableOpacity style={styles.flagButton} onPress={() => handleSelection('', 'Germany')}>
+          <Image source={require('../../assets/flags/german-flag.png')} style={styles.flagImage} />
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -97,11 +100,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginBottom: 20,
     flexWrap: 'wrap',
+    width: '100%',
+    marginBottom: 20,
   },
   flagButton: {
-    marginHorizontal: 5
+    marginHorizontal: 5,
+    marginVertical: 10,
+    width: '25%',
+    alignItems: 'center',
   },
   flagImage: {
     width: 70,

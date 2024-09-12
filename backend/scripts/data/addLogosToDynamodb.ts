@@ -78,6 +78,25 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Torino', difficulty: 'medium', imageKey: 'torino.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
   { name: 'Udinese', difficulty: 'medium', imageKey: 'udinese.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
   { name: 'Venezia', difficulty: 'hard', imageKey: 'venezia.png', enabled: true, league: 'Serie A', country: 'Italy', division: 1 },
+  //Bundesliga
+  { name: 'Augsburg', difficulty: 'hard', imageKey: 'augsburg.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Leverkusen', difficulty: 'easy', imageKey: 'bayerleverkusen.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Dortmund', difficulty: 'easy', imageKey: 'borussiadortmund.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Monchengladbach', difficulty: 'medium', imageKey: 'borussiamonchengladbach.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Eintracht Frankfurt', difficulty: 'medium', imageKey: 'eintrachtfrankfurt.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Bayern', difficulty: 'easy', imageKey: 'fcbayernmunich.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Heidenheim', difficulty: 'hard', imageKey: 'fcheidenheim.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Mainz', difficulty: 'medium', imageKey: 'fsvmainz.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Holstein Kiel', difficulty: 'hard', imageKey: 'holsteinkiel.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Leipzig', difficulty: 'medium', imageKey: 'rbleipzig.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Sankt Pauli', difficulty: 'medium', imageKey: 'sanktpauli.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Freiburg', difficulty: 'hard', imageKey: 'scfreiburg.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Hoffenheim', difficulty: 'hard', imageKey: 'tsghoffenheim.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Union Berlin', difficulty: 'hard', imageKey: 'unionberlin.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Stuttgart', difficulty: 'medium', imageKey: 'vfbstuttgart.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Bochum', difficulty: 'medium', imageKey: 'vflbochum.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Werder', difficulty: 'medium', imageKey: 'werderbremen.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
+  { name: 'Wolfsburg', difficulty: 'medium', imageKey: 'wolfsburg.png', enabled: true, league: 'Bundesliga', country: 'Germany', division: 1 },
 ];
 
 const deleteAllItems = async () => {
@@ -117,6 +136,7 @@ const putLogoData = async (logo: LogoMetadata) => {
       league: { S: logo.league },
       country: { S: logo.country },
       division: { N: logo.division.toString() },
+      //TODO add a field with alternative team names
     }
   };
 
@@ -129,6 +149,7 @@ const putLogoData = async (logo: LogoMetadata) => {
 }
 
 const run = async () => {
+  //Comment out next line if you just want to add new teams without deleting the existing ones
   await deleteAllItems();
 
   for (const logo of logosMetadata) {
