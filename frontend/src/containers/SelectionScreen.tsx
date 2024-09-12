@@ -53,6 +53,9 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={styles.flagButton} onPress={() => handleSelection('', 'Germany')}>
           <Image source={require('../../assets/flags/german-flag.png')} style={styles.flagImage} />
         </TouchableOpacity>
+        <TouchableOpacity style={styles.flagButton} onPress={() => handleSelection('', 'Greece')}>
+          <Image source={require('../../assets/flags/greek-flag.png')} style={styles.flagImage} />
+        </TouchableOpacity>
       </View>
     </View>
   )
