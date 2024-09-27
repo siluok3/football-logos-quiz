@@ -26,13 +26,13 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Build Lambdas
-        working-directory: ./backend
-        run: npm run build
-
       - name: Install dependencies for CDK
         working-directory: ./backend/cdk
         run: npm install
+
+      - name: Build Lambdas
+        working-directory: ./backend
+        run: npm run build
 
       - name: Install AWS CLI
         run: sudo apt-get install awscli -y
