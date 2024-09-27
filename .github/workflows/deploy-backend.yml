@@ -45,7 +45,7 @@ jobs:
 
       - name: CDK Diff with prod resources
         if: github.ref != 'refs/heads/main'
-        working-directory: ./backend
+        working-directory: ./backend/cdk
         run: |
           echo "Checking CDK diff for production stack"
           npx cdk diff
@@ -56,7 +56,7 @@ jobs:
 
       - name: Deploy Backend Stack
         if: github.ref == 'refs/heads/main'
-        working-directory: ./backend
+        working-directory: ./backend/cdk
         run: |
          echo "Deploying to ${{ env.DEPLOY_ENV }}"
          npx cdk deploy --require-approval never --all
