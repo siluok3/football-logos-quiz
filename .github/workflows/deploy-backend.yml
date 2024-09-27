@@ -2,15 +2,17 @@ name: Deploy Backend Stack
 
 on:
   push:
-#    paths:
-#      - 'backend/**'
-#    branches:
-#      - main
-#      - dev
+    paths:
+      - 'backend/**'
+      - '.github/workflows/github-backend.yml'
+    branches:
+      - main
+      - dev
   workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
-  build-and-deploy:
+  # Stage 1: Install dependencies
+  install-depenencies:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,6 +42,16 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
 
+  # Stage 2: CDK diff to check the diff with the prod resources
+  diff:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -66,7 +78,37 @@ jobs:
         working-directory: ./backend/cdk
         run: |
           echo "Deploying to ${{ env.DEPLOY_ENV }}"
-          ./node_modules/.bin/cdk --require-approval never --app "npx ts-node bin/cdk.ts"
+          cdk deploy --require-approval never
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+
+  # Stage 3: Deploy
+  deploy:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-central-1'
+
+      - name: Set Deployment Environment
+        run: echo "DEPLOY_ENV='prod'" >> $GITHUB_ENV
+
+      - name: Deploy Backend Stack
+        working-directory: ./backend/cdk
+        run: |
+          echo "Deploying to ${{ env.DEPLOY_ENV }}"
+          cdk deploy --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
