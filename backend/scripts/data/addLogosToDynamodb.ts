@@ -9,6 +9,7 @@ export type LogoMetadata = {
   league: string;
   country: string;
   division: number;
+  alternatives?: string[];
 }
 
 const client  = new DynamoDBClient({ region: 'eu-central-1' });
@@ -112,6 +113,44 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Panserraikos', difficulty: 'hard', imageKey: 'panserraikos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
   { name: 'Paok', difficulty: 'easy', imageKey: 'paok.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
   { name: 'Volos', difficulty: 'hard', imageKey: 'volos.png', enabled: true, league: 'Superleague', country: 'Greece', division: 1 },
+  //Eredivisie
+  { name: 'Ajax', difficulty: 'easy', imageKey: 'ajax.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Alkmaar', difficulty: 'medium', imageKey: 'alkmaar.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Almere', difficulty: 'medium', imageKey: 'alkmaar.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['Almere City'] },
+  { name: 'Breda', difficulty: 'hard', imageKey: 'breda.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Groningen', difficulty: 'hard', imageKey: 'fcgroningen.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Feyenoord', difficulty: 'easy', imageKey: 'feyenoord.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['feyenord'] },
+  { name: 'Sittard', difficulty: 'hard', imageKey: 'fortunasittard.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['Fortuna Sittard'] },
+  { name: 'Go Ahead Eagles', difficulty: 'hard', imageKey: 'goaheadeagles.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Heerenveen', difficulty: 'medium', imageKey: 'heerenveen.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Heracles', difficulty: 'hard', imageKey: 'heracles.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Nijmegen', difficulty: 'medium', imageKey: 'nijmegen.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Psv', difficulty: 'easy', imageKey: 'psv.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Sparta Rotterdam', difficulty: 'hard', imageKey: 'spartarotterdam.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['Sparta', 'Rotterdam'] },
+  { name: 'Twente', difficulty: 'medium', imageKey: 'twente.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Utrecht', difficulty: 'medium', imageKey: 'utrecht.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Waalwijk', difficulty: 'hard', imageKey: 'waalwijk.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Willem', difficulty: 'medium', imageKey: 'willem.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  { name: 'Zwolle', difficulty: 'hard', imageKey: 'zwolle.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
+  //Ligue 1
+  { name: 'Angers', difficulty: 'hard', imageKey: 'angers.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1 },
+  { name: 'Auxerre', difficulty: 'medium', imageKey: 'auxerre.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1 },
+  { name: 'Brest', difficulty: 'medium', imageKey: 'brest.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1 },
+  { name: 'Havre', difficulty: 'hard', imageKey: 'havre.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['Le Havre', 'HAC'] },
+  { name: 'Lille', difficulty: 'medium', imageKey: 'lille.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['LOSC'] },
+  { name: 'Lyon', difficulty: 'easy', imageKey: 'lyon.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['Lyonnais', 'Olympique Lyonnais'] },
+  { name: 'Marseille', difficulty: 'easy', imageKey: 'marseille.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['Olympique Marseille'] },
+  { name: 'Monaco', difficulty: 'easy', imageKey: 'monaco.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Montpellier', difficulty: 'hard', imageKey: 'montpellier.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Nantes', difficulty: 'medium', imageKey: 'nantes.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Nice', difficulty: 'medium', imageKey: 'nice.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Psg', difficulty: 'easy', imageKey: 'psg.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives:['Paris', 'Paris Saint Germain'] },
+  { name: 'Lens', difficulty: 'hard', imageKey: 'rclens.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Rennes', difficulty: 'medium', imageKey: 'rennes.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['Rennais'] },
+  { name: 'Saint Ettiene', difficulty: 'hard', imageKey: 'saintettiene.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['ASSE'] },
+  { name: 'Stade Reims', difficulty: 'hard', imageKey: 'stadereims.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Strasbourg', difficulty: 'hard', imageKey: 'strasbourg.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Toulouse', difficulty: 'medium', imageKey: 'toulouse.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
 ];
 
 const deleteAllItems = async () => {
