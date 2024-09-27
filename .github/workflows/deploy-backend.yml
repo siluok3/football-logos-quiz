@@ -12,7 +12,7 @@ on:
 
 jobs:
   # Stage 1: Install dependencies
-  install-depenencies:
+  install-dependencies:
     runs-on: ubuntu-latest
 
     steps:
