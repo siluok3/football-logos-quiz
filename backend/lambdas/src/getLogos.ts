@@ -14,7 +14,7 @@ const bucketName = process.env.LOGOS_BUCKET_NAME;
 
 export const handler: APIGatewayProxyHandler = async () => {
   try {
-    console.log('Fetching ALL LOGOS');
+    console.log('Fetching all logos');
     const result = await dynamodbClient.send(new ScanCommand({ TableName: tableName }));
 
     const transformedItems = result.Items?.map(transformDynamoDBItem) || []
