@@ -52,7 +52,7 @@ jobs:
         working-directory: ./backend/cdk
         run: |
           echo "Checking CDK diff for production stack"
-          npx cdk diff --app "npx ts-node bin/cdk.ts"
+          ./node_modules/.bin/cdk diff --app "npx ts-node bin/cdk.ts"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -63,7 +63,7 @@ jobs:
         working-directory: ./backend/cdk
         run: |
           echo "Deploying to ${{ env.DEPLOY_ENV }}"
-          npx cdk deploy --require-approval never --app "npx ts-node bin/cdk.ts"
+          ./node_modules/.bin/cdk --require-approval never --app "npx ts-node bin/cdk.ts"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
