@@ -5,9 +5,9 @@ on:
     paths:
       - 'backend/**'
       - '.github/workflows/github-backend.yml'
-    branches:
-      - main
-      - dev
+#    branches:
+#      - main
+#      - dev
   workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
