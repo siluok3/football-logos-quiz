@@ -26,13 +26,13 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Install dependencies for CDK
-        working-directory: ./backend/cdk
-        run: npm install
-
       - name: Build Lambdas
         working-directory: ./backend
         run: npm run build
+
+      - name: Install dependencies for CDK
+        working-directory: ./backend/cdk
+        run: npm install
 
       - name: Install AWS CLI
         run: sudo apt-get install awscli -y
@@ -52,7 +52,7 @@ jobs:
         working-directory: ./backend/cdk
         run: |
           echo "Checking CDK diff for production stack"
-          npx cdk diff
+          npx cdk diff --app "npx ts-node bin/cdk.ts"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -62,9 +62,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         working-directory: ./backend/cdk
         run: |
-         echo "Deploying to ${{ env.DEPLOY_ENV }}"
-         npx cdk deploy --require-approval never --all
+          echo "Deploying to ${{ env.DEPLOY_ENV }}"
+          npx cdk deploy --require-approval never --app "npx ts-node bin/cdk.ts"
         env:
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
