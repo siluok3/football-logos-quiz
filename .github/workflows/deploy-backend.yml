@@ -11,9 +11,10 @@ on:
   workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
-  # Stage 1: Install dependencies
-  install-dependencies:
+  # Stage: CDK diff to check the diff with the prod resources
+  diff:
     runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
 
     steps:
       - name: Checkout Code
@@ -41,22 +42,6 @@ jobs:
 
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
-
-  # Stage 2: CDK diff to check the diff with the prod resources
-  diff:
-    runs-on: ubuntu-latest
-    needs: install-dependencies
-    if: github.ref != 'refs/heads/main'
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk@latest
-
-      - name: Install AWS CLI
-        run: sudo apt-get install awscli -y
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -90,15 +75,37 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
 
-  # Stage 3: Deploy
+  # Stage: Deploy
   deploy:
     runs-on: ubuntu-latest
-    needs: install-dependencies
     if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies for backend
+        working-directory: ./backend
+        run: npm install
+
+      - name: Build Lambdas
+        working-directory: ./backend
+        run: npm run build
+
+      - name: Install dependencies for CDK
+        working-directory: ./backend/cdk
+        run: npm install
+
+      - name: Install AWS CLI
+        run: sudo apt-get install awscli -y
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@latest
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
