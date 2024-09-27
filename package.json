@@ -5,10 +5,12 @@
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend/cdk && npm install",
     "start:frontend": "cd frontend && npx expo start",
-    "deploy:frontend": "cd frontend && eas update --auto --message \"Triggered manually from local environment\"",
-    "diff:backend": "cd backend && npm run build && cd cdk && npx cdk diff",
-    "deploy:backend": "cd backend && npm run build && cd cdk && npx cdk deploy",
-    "seed:db": "cd backend/scripts/data && npx ts-node addLogosToDynamoDB.ts"
+    "deploy:frontend:prod": "cd frontend && eas update --auto --message \"Triggered manually from local environment\"",
+    "diff:backend:dev": " DEPLOY_ENV=dev cd backend && npm run build && cd cdk && npx cdk diff",
+    "diff:backend:prod": " DEPLOY_ENV=prod cd backend && npm run build && cd cdk && npx cdk diff",
+    "deploy:backend:dev": "DEPLOY_ENV=dev cd backend && npm run build && cd cdk && npx cdk deploy",
+    "seed:db:prod": "ENV=prod cd backend/scripts/data && npx ts-node addLogosToDynamoDB.ts",
+    "seed:db:dev": "ENV=dev cd backend/scripts/data && npx ts-node addLogosToDynamoDB.ts"
   },
   "author": "Kiriakos Papachristou",
   "license": "ISC",

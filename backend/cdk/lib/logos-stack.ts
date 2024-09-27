@@ -9,21 +9,23 @@ import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path';
 
 export class LogosStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps & { envPrefix: 'dev' | 'prod' }) {
     super(scope, id, props);
 
+    const envPrefix = props?.envPrefix ?? 'dev';
+
     // S3 Bucket for Logo Images
-    const logosBucket = new s3.Bucket(this, 'LogosBucket', {
-      bucketName: 'football-logos-quiz-bucket',
+    const logosBucket = new s3.Bucket(this, `${envPrefix}-LogosBucket`, {
+      bucketName: `${envPrefix}-football-logos-quiz-bucket`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
 
     // DynamoDB Table for Logo Metadata
-    const logosTable = new dynamodb.Table(this, 'LogosTable', {
+    const logosTable = new dynamodb.Table(this, `${envPrefix}-LogosTable`, {
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      tableName: 'Logos'
+      tableName: `${envPrefix}-Logos`
     });
     // Add secondary index for `difficulty`
     logosTable.addGlobalSecondaryIndex({
@@ -39,18 +41,19 @@ export class LogosStack extends cdk.Stack {
     });
 
     // SQS Queues
-    const logQueue = new sqs.Queue(this, 'LogQueue', {
-      queueName: 'GameCompletionQueue',
+    const logQueue = new sqs.Queue(this, `${envPrefix}-LogQueue`, {
+      queueName: `${envPrefix}-GameCompletionQueue`,
       retentionPeriod: cdk.Duration.days(4),
     });
 
 
     // Lambdas
     // Lambda function to fetch logos
-    const getLogosLambda = new lambda.Function(this, 'GetLogosFunction', {
+    const getLogosLambda = new lambda.Function(this, `${envPrefix}-GetLogosFunction`, {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, '../../lambdas/dist')),
       handler: 'getLogos.handler',
+      functionName: `${envPrefix}-getLogosHandler`,
       environment: {
         LOGOS_TABLE_NAME: logosTable.tableName,
         LOGOS_BUCKET_NAME: logosBucket.bucketName
@@ -63,10 +66,11 @@ export class LogosStack extends cdk.Stack {
     logosBucket.grantRead(getLogosLambda);
 
     // Lambda function to fetch logos by search term
-    const getLogosBySearchTermLambda = new lambda.Function(this, 'GetLogosBySearchTermFunction', {
+    const getLogosBySearchTermLambda = new lambda.Function(this, `${envPrefix}-GetLogosBySearchTermFunction`, {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, '../../lambdas/dist')),
       handler: 'getLogosBySearchTerm.handler',
+      functionName: `${envPrefix}-getLogosBySearchTermHandler`,
       environment: {
         LOGOS_TABLE_NAME: logosTable.tableName,
         LOGOS_BUCKET_NAME: logosBucket.bucketName
@@ -89,10 +93,11 @@ export class LogosStack extends cdk.Stack {
     }));
 
     // Lambda to send game Completion SQS messages
-    const sendGameCompletionMessageLambda = new lambda.Function(this, 'SendGameCompletionMessageFunction', {
+    const sendGameCompletionMessageLambda = new lambda.Function(this, `${envPrefix}-SendGameCompletionMessageFunction`, {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(path.join(__dirname, '../../lambdas/dist')),
       handler: 'sendGameCompletionMessage.handler',
+      functionName: `${envPrefix}-gameCompletionHandler`,
       environment: {
         LOG_QUEUE_URL: logQueue.queueUrl,
       }
@@ -102,9 +107,12 @@ export class LogosStack extends cdk.Stack {
     logQueue.grantSendMessages(sendGameCompletionMessageLambda);
 
     // API Gateway endpoints
-    const api = new apigateway.RestApi(this, 'LogosApi', {
-      restApiName: 'Logos Service',
-      description: 'This services fetches football logos'
+    const api = new apigateway.RestApi(this, `${envPrefix}-LogosApi`, {
+      restApiName: `${envPrefix.toUpperCase()}- Logos Service`,
+      description: `This services fetches football logos for ${envPrefix}`,
+      deployOptions: {
+        stageName: envPrefix
+      }
     });
 
     const getLogosIntegration = new apigateway.LambdaIntegration(getLogosLambda);
@@ -118,5 +126,10 @@ export class LogosStack extends cdk.Stack {
     const sendGameCompletionIntegration = new apigateway.LambdaIntegration(sendGameCompletionMessageLambda);
     const gameCompletionResource = api.root.addResource('sendGameCompletion');
     gameCompletionResource.addMethod('POST', sendGameCompletionIntegration);
+
+    new cdk.CfnOutput(this, 'APIEndpoint', {
+      value: api.url,
+      description: `The API Gateway endpoint for the ${envPrefix} environment`,
+    });
   }
 }

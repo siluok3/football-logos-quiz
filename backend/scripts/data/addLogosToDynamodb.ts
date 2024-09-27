@@ -14,6 +14,9 @@ export type LogoMetadata = {
 
 const client  = new DynamoDBClient({ region: 'eu-central-1' });
 
+const targetEnv = process.env.ENV || 'dev';
+const tableName = `${targetEnv}-Logos`;
+
 const logosMetadata: LogoMetadata[] = [
   //La Liga
   { name: 'Real Madrid', difficulty: 'easy', imageKey: 'realmadrid.png', enabled: true, league: 'La Liga', country: 'Spain', division: 1 },
@@ -156,14 +159,14 @@ const logosMetadata: LogoMetadata[] = [
 const deleteAllItems = async () => {
   try {
     const scanParams = {
-      TableName: 'Logos',
+      TableName: tableName,
     };
     const scanCommand = new ScanCommand(scanParams);
     const result = await client.send(scanCommand);
 
     for (const item of result.Items || []) {
       const deleteParams = {
-        TableName: 'Logos',
+        TableName: tableName,
         Key: {
           id: item.id,
         },
@@ -180,7 +183,7 @@ const deleteAllItems = async () => {
 
 const putLogoData = async (logo: LogoMetadata) => {
   const params = {
-    TableName: 'Logos',
+    TableName: tableName,
     Item: {
       id: { S: uuidv4() },
       name: { S: logo.name },
