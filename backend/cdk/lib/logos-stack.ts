@@ -70,7 +70,8 @@ export class LogosStack extends cdk.Stack {
       environment: {
         LOGOS_TABLE_NAME: logosTable.tableName,
         LOGOS_BUCKET_NAME: logosBucket.bucketName
-      }
+      },
+      timeout: cdk.Duration.seconds(10),
     });
 
     // Grant access to getLogosByDifficulty lambda for DynamoDB and S3 bucket

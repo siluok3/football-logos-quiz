@@ -116,7 +116,7 @@ const logosMetadata: LogoMetadata[] = [
   //Eredivisie
   { name: 'Ajax', difficulty: 'easy', imageKey: 'ajax.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
   { name: 'Alkmaar', difficulty: 'medium', imageKey: 'alkmaar.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
-  { name: 'Almere', difficulty: 'medium', imageKey: 'alkmaar.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['Almere City'] },
+  { name: 'Almere', difficulty: 'hard', imageKey: 'almere.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['Almere City'] },
   { name: 'Breda', difficulty: 'hard', imageKey: 'breda.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
   { name: 'Groningen', difficulty: 'hard', imageKey: 'fcgroningen.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1 },
   { name: 'Feyenoord', difficulty: 'easy', imageKey: 'feyenoord.png', enabled: true, league: 'Eredivise', country: 'Netherlands', division: 1, alternatives: ['feyenord'] },
@@ -143,7 +143,7 @@ const logosMetadata: LogoMetadata[] = [
   { name: 'Monaco', difficulty: 'easy', imageKey: 'monaco.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
   { name: 'Montpellier', difficulty: 'hard', imageKey: 'montpellier.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
   { name: 'Nantes', difficulty: 'medium', imageKey: 'nantes.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
-  { name: 'Nice', difficulty: 'medium', imageKey: 'nice.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
+  { name: 'Nice', difficulty: 'medium', imageKey: 'ogcnice.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
   { name: 'Psg', difficulty: 'easy', imageKey: 'psg.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives:['Paris', 'Paris Saint Germain'] },
   { name: 'Lens', difficulty: 'hard', imageKey: 'rclens.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, },
   { name: 'Rennes', difficulty: 'medium', imageKey: 'rennes.png', enabled: true, league: 'Ligue 1', country: 'France', division: 1, alternatives: ['Rennais'] },
