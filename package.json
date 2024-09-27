@@ -6,6 +6,7 @@
     "install:backend": "cd backend/cdk && npm install",
     "start:frontend": "cd frontend && npx expo start",
     "deploy:frontend": "cd frontend && eas update --auto --message \"Triggered manually from local environment\"",
+    "diff:backend": "cd backend && npm run build && cd cdk && npx cdk diff",
     "deploy:backend": "cd backend && npm run build && cd cdk && npx cdk deploy",
     "seed:db": "cd backend/scripts/data && npx ts-node addLogosToDynamoDB.ts"
   },
