@@ -1,7 +1,7 @@
 name: Deploy Backend Stack
 
 on:
-#  push:
+  push:
 #    paths:
 #      - 'backend/**'
 #    branches:
