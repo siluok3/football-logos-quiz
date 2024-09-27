@@ -4,9 +4,9 @@ on:
   push:
     paths:
       - 'backend/**'
-    branches:
-      - main
-      - dev
+#    branches:
+#      - main
+#      - dev
   workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
