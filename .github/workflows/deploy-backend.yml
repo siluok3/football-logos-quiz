@@ -2,9 +2,9 @@ name: Deploy Backend Stack
 
 on:
   push:
-    paths:
-      - 'backend/**'
-      - '.github/workflows/github-backend.yml'
+#    paths:
+#      - 'backend/**'
+#      - '.github/workflows/github-backend.yml'
 #    branches:
 #      - main
 #      - dev
