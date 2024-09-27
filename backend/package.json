@@ -6,8 +6,7 @@
   "description": "backend",
   "private": true,
   "scripts": {
-    "build": "tsc --build lambdas/tsconfig.json",
-    "cdk-deploy": "npm run build && cd cdk && npx cdk deploy"
+    "build": "tsc --build lambdas/tsconfig.json"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.637.0",
