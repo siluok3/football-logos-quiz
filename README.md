@@ -21,7 +21,7 @@ This will deploy all the backend resources to AWS
 Just execute the commands on the root directory
 ```
 npm run install:frontend
-npm runinstall:backend
+npm run install:backend
 ```
 
 ## Test the application on a real device

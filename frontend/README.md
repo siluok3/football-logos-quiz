@@ -1,10 +1,6 @@
-## Copy logos to S3 bucket 
-```
-aws s3 cp ./assets/logos s3://<s3-bucket-name>/ --recursive
-```
-
 ## Deploy frontend to Expo
-```
-npm install -g eas-cli
-eas update --auto --message "Triggered manually from local environment"
-```
+
+Frontend application created with React native and Expo
+
+Expo is used to deploy the application and use it with Expo Dev
+Android and iOS app.

@@ -52,9 +52,9 @@ jobs:
       - name: Deploy Backend Stack
         working-directory: ./backend/cdk
         run: |
-          echo "Deploying to ${{ env.DEPLOY_ENV }}"
+          echo "Deploying to prod"
           cdk deploy --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          DEPLOY_ENV: prod
