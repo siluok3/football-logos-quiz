@@ -1,16 +1,14 @@
-name: Deploy Backend Stack
+name: CDK Diff with prod AWS Resources
 
 on:
   push:
     paths:
       - 'backend/**'
-      - '.github/workflows/deploy-backend.yml'
-    branches:
-      - main
+      - '.github/workflows/diff-backend.yml'
   workflow_dispatch: # Keep this to trigger the deployment manually
 
 jobs:
-  deploy:
+  diff:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -49,12 +47,12 @@ jobs:
       - name: Set Deployment Environment
         run: echo "DEPLOY_ENV='prod'" >> $GITHUB_ENV
 
-      - name: Deploy Backend Stack
+      - name: Run CDK Diff
         working-directory: ./backend/cdk
         run: |
-          echo "Deploying to ${{ env.DEPLOY_ENV }}"
-          cdk deploy --require-approval never
+          echo "Running CDK diff for production stack"
+          cdk diff
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
+          DEPLOY_ENV: prod
