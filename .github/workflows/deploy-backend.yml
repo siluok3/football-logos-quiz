@@ -1,0 +1,60 @@
+name: Deploy Backend Stack
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+    branches:
+      - main
+  workflow_dispatch: # Keep this to trigger the deployment manually
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies for backend
+        working-directory: ./backend
+        run: npm install
+
+      - name: Build Lambdas
+        working-directory: ./backend
+        run: npm run build
+
+      - name: Install dependencies for CDK
+        working-directory: ./backend/cdk
+        run: npm install
+
+      - name: Install AWS CLI
+        run: sudo apt-get install awscli -y
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@latest
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-central-1'
+
+      - name: Set Deployment Environment
+        run: echo "DEPLOY_ENV='prod'" >> $GITHUB_ENV
+
+      - name: Deploy Backend Stack
+        working-directory: ./backend/cdk
+        run: |
+          echo "Deploying to ${{ env.DEPLOY_ENV }}"
+          cdk deploy --require-approval never
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DEPLOY_ENV: ${{ env.DEPLOY_ENV }}
