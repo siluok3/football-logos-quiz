@@ -122,12 +122,7 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
       animateWrongAnswer()
 
       if (wrongAttempts >= 2) {
-        setAlertMessage(`The correct answer was: ${currentLogo.name}`);
-        setShowAlert(true);
-
-        setTimeout(() => {
-          handleNextLogo();
-        }, 400)
+        handleShowAnswer()
       }
     }
   }
@@ -139,6 +134,17 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
 
     const nextLogo: Logo = remainingLogos[Math.floor(Math.random() * remainingLogos.length)]
     setCurrentLogo(nextLogo)
+  }
+
+  const handleShowAnswer = () => {
+    if (!currentLogo) return
+
+    setAlertMessage(`The correct answer was: ${currentLogo.name}`)
+    setShowAlert(true)
+
+    setTimeout(() => {
+      handleNextLogo()
+    }, 400)
   }
 
   const handleNextLogo = () => {
@@ -190,15 +196,21 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
               onSubmitEditing={handleCheckAnswer}
               returnKeyType="done"
             />
+            {/* Buttons */}
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkipLogo}>
                 <Text style={styles.buttonText}>Skip</Text>
               </TouchableOpacity>
-
               <TouchableOpacity style={styles.button} onPress={handleCheckAnswer}>
                 <Text style={styles.buttonText}>Check Answer</Text>
               </TouchableOpacity>
             </View>
+            <View style={styles.singleButtonContainer}>
+              <TouchableOpacity style={[styles.button, styles.showAnswerButton]} onPress={handleShowAnswer}>
+                <Text style={styles.buttonText}>Show Answer</Text>
+              </TouchableOpacity>
+            </View>
+
             {isCorrect
               ? <AnimatedAnswerResponse styles={styles.correctText} animatedValue={correctAnimationValue} text="Correct!" />
               : <AnimatedAnswerResponse styles={styles.wrongText} animatedValue={wrongAnimationValue} text="Try again" />
@@ -215,7 +227,7 @@ const RandomLogos: React.FC<RandomLogosProps> = ({ route }) => {
         <CustomAlert
           visible={showAlert}
           onClose={() => setShowAlert(false)}
-          title="Wrong Answer!"
+          title='Better luck next time'
           message={alertMessage}
         />
       </ScrollView>
@@ -265,7 +277,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
-    marginTop: 20,
+    marginTop: 10,
+  },
+  singleButtonContainer: {
+    width: '80%',
+    marginTop: 10,
   },
   button: {
     flex: 1,
@@ -279,6 +295,9 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     backgroundColor: '#FF5252',
+  },
+  showAnswerButton: {
+    backgroundColor: '#87CEEB',
   },
   buttonText: {
     color: '#fff',
